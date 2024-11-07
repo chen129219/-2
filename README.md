@@ -2,7 +2,6 @@
 
 根据S-AES算法编写和调试程序，提供GUI解密支持用户交互。输入可以是16bit的数据和16bit的密钥，输出是16bit的密文。
 
-
 ![0a22f1a875a12afa361e5af25f9f1a9a](https://github.com/user-attachments/assets/8783338f-4c6f-472a-97fa-f8e764127c6b)
 
 2.
@@ -26,12 +25,12 @@
 
 4.
 
-多重加密
+多重加密'
 
 ![0cbeb8f3a835efd43980224e675290af](https://github.com/user-attachments/assets/d37cbcc9-2902-4bfc-990f-196d6711d5a5)
 
 
-5.
+4.
 
 基于S-AES算法，使用密码分组链(CBC)模式对较长的明文消息进行加密。注意初始向量(16 bits) 的生成，并需要加解密双方共享。
 在CBC模式下进行加密，并尝试对密文分组进行替换或修改，然后进行解密，对比篡改密文前后的解密结果。
