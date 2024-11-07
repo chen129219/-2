@@ -1,4 +1,4 @@
-# Define S-Box and inverse S-Box for S-AES
+# 定义S-AES的S盒和逆S盒
 S_BOX = [
     0x9, 0x4, 0xA, 0xB,
     0xD, 0x1, 0x8, 0x5,
@@ -13,10 +13,10 @@ INV_S_BOX = [
     0xC, 0x4, 0xD, 0xE
 ]
 
-# Define key scheduling constants
+# 定义密钥调度常数
 RCON1, RCON2 = 0x80, 0x30
 
-
+# 在GF(2^4)域中进行乘法运算
 def mult(p1, p2):
     """Galois Field (GF(2^4)) multiplication of p1 and p2."""
     p = 0
@@ -30,21 +30,21 @@ def mult(p1, p2):
     return p & 0xF
 
 
+# 在S-AES中进行轮密钥加操作（异或操作）
 def add_key(s1, s2):
     """Add two keys in S-AES (xor operation)."""
     return [i ^ j for i, j in zip(s1, [(s2 >> 4 * (1 - i % 2)) & 0xF for i in range(4)])]
 
-
+# 使用给定的S盒替换nibbles
 def sub_nibbles(sbox, s):
     """Substitute nibbles using the given S-Box."""
     return [sbox[i] for i in s]
-
+# 行移位操作
 
 def shift_rows(s):
     """Shift rows operation."""
     return [s[0], s[1], s[3], s[2]]
-
-
+# S-AES的列混淆操作
 def mix_columns(s):
     """Mix columns operation for S-AES."""
     return [
@@ -52,7 +52,7 @@ def mix_columns(s):
         s[2] ^ mult(4, s[0]), s[3] ^ mult(4, s[1])
     ]
 
-
+# S-AES的密钥扩展操作
 def key_expansion(key):
     """Key expansion for S-AES."""
     w = [0] * 6
@@ -64,7 +64,7 @@ def key_expansion(key):
     w[5] = w[4] ^ w[3]
     return [w[0] << 8 | w[1], w[2] << 8 | w[3], w[4] << 8 | w[5]]
 
-
+# S-AES加密函数
 def encrypt(plaintext, key):
     """Encrypts a block of plaintext with S-AES."""
     key_schedule = key_expansion(key)
@@ -81,7 +81,7 @@ def encrypt(plaintext, key):
 
     return state
 
-
+# S-AES解密函数
 def decrypt(ciphertext, key):
     """Decrypts a block of ciphertext with S-AES."""
     key_schedule = key_expansion(key)
@@ -99,12 +99,11 @@ def decrypt(ciphertext, key):
 
     return state
 
-
+# 将字符串转换为nibbles列表
 def str_to_nibbles(s):
     """Convert a string to a list of nibbles."""
     return [(ord(s[i // 2]) >> (4 * (1 - i % 2))) & 0xF for i in range(len(s) * 2)]
-
-
+# 将nibbles列表转换回字符串
 def nibbles_to_str(nibbles):
     """Convert a list of nibbles back to a string."""
     result = []
@@ -113,9 +112,9 @@ def nibbles_to_str(nibbles):
     return ''.join(result)
 
 
-# Example usage
-key = 0b0100101011110100  # Example 16-bit key
-plaintext = "AB"  # 2-character ASCII string to encrypt
+# Example
+key = 0b0100101011110100
+plaintext = "AB"
 plaintext_nibbles = str_to_nibbles(plaintext)
 
 ciphertext_nibbles = encrypt(plaintext_nibbles, key)
@@ -129,8 +128,7 @@ print(f"Decrypted: {list(map(hex, decrypted_nibbles))} -> {decrypted_text!r}")
 import tkinter as tk
 from tkinter import messagebox
 
-# [Omitted] Reuse the encryption, decryption functions and helper functions
-
+# 解密按钮事件处理函数
 def on_encrypt():
     try:
         key = int(entry_key.get(), 2)
@@ -166,13 +164,12 @@ def on_decrypt():
 
     except ValueError as e:
         messagebox.showerror("Error", f"Invalid input: {e}")
-
-# Initialize the main window
+# 初始化主窗口
 root = tk.Tk()
 root.title("S-AES Encryption")
 
-# Create and place the widgets
-tk.Label(root, text="Key (16-bit binary):").grid(row=0, column=0, sticky=tk.W)
+# 创建并放置组件
+tk.Label(root, text="Key :").grid(row=0, column=0, sticky=tk.W)
 entry_key = tk.Entry(root)
 entry_key.grid(row=0, column=1, columnspan=2, sticky=tk.EW)
 
@@ -193,6 +190,5 @@ btn_decrypt.grid(row=4, column=1, sticky=tk.EW)
 tk.Label(root, text="Decrypted:").grid(row=5, column=0, sticky=tk.W)
 entry_decrypted = tk.Entry(root)
 entry_decrypted.grid(row=5, column=1, columnspan=2, sticky=tk.EW)
-
-# Start the main loop
+# 启动主循环
 root.mainloop()
